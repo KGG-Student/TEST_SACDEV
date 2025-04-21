@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>{{ org.name }}</h2>
+<p>{{ org.description }}</p>
+
+<h3>Mission</h3>
+<p>{{ org.mission }}</p>
+
+<h3>Vision</h3>
+<p>{{ org.vision }}</p>
+
+<h3>Members</h3>
+<ul>
+  {% for member in members %}
+    <li>{{ member.full_name }} - {{ member.position }}</li>
+  {% endfor %}
+</ul>
+
+<h3>Documents</h3>
+<ul>
+  {% for doc in documents %}
+    <li>{{ doc.title }} - <a href="{{ url_for('static', filename=doc.file_path) }}">View</a></li>
+  {% endfor %}
+</ul>
+{% endblock %}

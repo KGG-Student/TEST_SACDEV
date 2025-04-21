@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>SACDEV Dashboard</h2>
+<p>Welcome, {{ user }}!</p>
+
+<table border="1" cellpadding="10">
+    <tr>
+        <th>Org Name</th>
+        <th>Description</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
+    {% for org in orgs %}
+    <tr>
+        <td>{{ org[1] }}</td>
+        <td>{{ org[2] }}</td>
+        <td>{{ org[5] }}</td>
+        <td><a href="/organization/{{ org[0] }}">View</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
