@@ -4,7 +4,7 @@ import sqlite3
 app = Flask(__name__)
 app.secret_key = 'secret123'  # Required for session and flash
 
-DATABASE = 'users.db'
+DATABASE = 'database/users.db'
 
 # --- DATABASE CONNECTION ---
 def get_db_connection():
@@ -67,11 +67,18 @@ def sacdev_dashboard():
 
     return render_template('sacdev_dashboard.html', user=session['username'], orgs=orgs)
 
+@app.route('/rrc_dashboard')
+def rrc_dashboard():
+    if 'username' not in session or session.get('role') != 'rrc':
+        return redirect(url_for('login'))
+    
+    # You can customize what data RRC should see here
+    return render_template('rrc_dashboard.html', user=session['username'])
+
 # --- LOGOUT ---
 @app.route('/logout')
 def logout():
     session.clear()
-    flash('You have been logged out.', 'info')
     return redirect(url_for('login'))
 
 # --- ORGANIZATIONS ---
