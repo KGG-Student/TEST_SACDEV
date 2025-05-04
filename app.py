@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, g
+from flask_login import logout_user
 import sqlite3
 
 app = Flask(__name__)
@@ -79,9 +80,8 @@ def rrc_dashboard():
 # --- LOGOUT ---
 @app.route('/logout')
 def logout():
-    session.clear()
-    return redirect(url_for('login'))
-
+    logout_user()  
+    return redirect(url_for('login'))  
 # --- ORGANIZATIONS ---
 
 @app.route('/organization/<int:org_id>')
