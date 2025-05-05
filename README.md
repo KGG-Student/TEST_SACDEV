@@ -1,19 +1,23 @@
-Feary Mylls Yumo
-Klent Uy Pimentel
-Kyle Gabriel Galanida
-Dave Justine Go
+#Feary Mylls Yumo
+#Klent Uy Pimentel
+#Kyle Gabriel Galanida
+#Dave Justine Go
 
 
-Instructions : for new clones
+##Instructions : for new clones
+
         python -m venv venv
 
     windows cmd 
-        venv\Scripts\activate
+###        venv\Scripts\activate
+
     windows powershell
-        .\venv\Scripts\Activate.ps1
+###        .\venv\Scripts\Activate.ps1
+
     linux/mac
-        source venv/bin/activate
+###        source venv/bin/activate
 
     if the cli does not switch to venv, open new cli
+    
     install requirements
-        pip install -r requirements.txt
+###        pip install -r requirements.txt
