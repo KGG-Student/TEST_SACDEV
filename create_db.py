@@ -74,6 +74,33 @@ c.execute('''
     VALUES (?, ?, ?)
 ''', ('rrc_user', 'rrc123', 'rrc'))
 
+# Optional: Insert a sample organization
+c.execute('''
+    INSERT INTO organizations (name, description, mission, vision, status)
+    VALUES (?, ?, ?, ?, ?)
+''', ('Sample Organization', 'This is a dummy organization for testing purposes.', 
+      'To provide an example for the student members.', 'To promote excellence and learning.',
+      'Active'))
+
+# Get the ID of the inserted organization
+org_id = c.lastrowid
+
+# Insert 5 dummy students (members)
+students = [
+    ('John Doe', 'President', 'johndoe@example.com', '09171234567', 'Male', 3.5, 'Computer Science', '4th', 'College of Engineering'),
+    ('Jane Smith', 'Vice President', 'janesmith@example.com', '09171234568', 'Female', 3.7, 'Business Administration', '3rd', 'College of Business'),
+    ('Mark Johnson', 'Secretary', 'markjohnson@example.com', '09171234569', 'Male', 3.8, 'Electrical Engineering', '2nd', 'College of Engineering'),
+    ('Emily Davis', 'Treasurer', 'emilydavis@example.com', '09171234570', 'Female', 3.6, 'Psychology', '1st', 'College of Arts and Sciences'),
+    ('Chris Lee', 'Public Relations Officer', 'chrislee@example.com', '09171234571', 'Male', 3.9, 'Mechanical Engineering', '4th', 'College of Engineering')
+]
+
+# Insert each student into the 'members' table
+for student in students:
+    c.execute('''
+        INSERT INTO members (org_id, full_name, position, email, contact_no, sex, qpi, course, year_level, college)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (org_id, student[0], student[1], student[2], student[3], student[4], student[5], student[6], student[7], student[8]))
+
 conn.commit()
 conn.close()
 

@@ -50,7 +50,7 @@ def login():
             else:
                 return 'Unauthorized', 403
         else:
-            return 'Invalid credentials'
+            return render_template('login.html', error='Invalid credentials')
 
     return render_template('login.html')
 
@@ -80,7 +80,7 @@ def rrc_dashboard():
 # --- LOGOUT ---
 @app.route('/logout')
 def logout():
-    logout_user()  
+    # logout_user()  
     return redirect(url_for('login'))  
 # --- ORGANIZATIONS ---
 

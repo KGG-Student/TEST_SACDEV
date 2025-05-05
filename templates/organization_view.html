@@ -1,3 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Organization View</title>
+  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> -->
+  <style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0 20px;
+    color: #000000;
+  }
+  
+  h2 {
+    color: #000000;
+    margin-top: 30px;
+    font-size: 2em;
+  }
+  
+  h3 {
+    color: #000000;
+    margin-top: 20px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 5px;
+  }
+  
+  p {
+    line-height: 1.6;
+    margin-bottom: 15px;
+    color: White;
+  }
+  
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  ul li {
+    background: #00ff00;
+    border: 1px solid #ddd;
+    padding: 10px 15px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    transition: background 0.3s ease;
+  }
+  
+  ul li:hover {
+    background-color: #ff00ae;
+  }
+  
+  a {
+    color: #3498db;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  </style>
+</head>
+<body>
+
 {% extends 'base.html' %}
 
 {% block content %}
@@ -24,3 +89,5 @@
   {% endfor %}
 </ul>
 {% endblock %}
+</body>
+</html>
