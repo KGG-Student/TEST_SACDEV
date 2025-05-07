@@ -1,10 +1,45 @@
 import sqlite3
+import os
 
-# Connect to SQLite database
-conn = sqlite3.connect('database/users.db')
+# Ensure the database folder exists
+os.makedirs('database', exist_ok=True)
+
+# Connect to the database
+db_path = 'database/db_script.db'
+conn = sqlite3.connect(db_path)
 c = conn.cursor()
 
-# List of dummy organizations
+# Create organizations table
+c.execute('''
+    CREATE TABLE IF NOT EXISTS organizations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        description TEXT,
+        mission TEXT,
+        vision TEXT,
+        status TEXT
+    )
+''')
+
+# Create members table
+c.execute('''
+    CREATE TABLE IF NOT EXISTS members (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        org_id INTEGER,
+        full_name TEXT NOT NULL,
+        position TEXT,
+        email TEXT,
+        contact_no TEXT,
+        sex TEXT,
+        qpi REAL,
+        course TEXT,
+        year_level TEXT,
+        college TEXT,
+        FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE
+    )
+''')
+
+# Dummy data
 organizations = [
     {
         'name': 'Tech Innovators',
@@ -50,23 +85,25 @@ organizations = [
     }
 ]
 
-# Insert organizations and members
+# Insert organizations and their members
 for org in organizations:
     c.execute('''
         INSERT INTO organizations (name, description, mission, vision, status)
         VALUES (?, ?, ?, ?, ?)
     ''', (org['name'], org['description'], org['mission'], org['vision'], org['status']))
     
-    org_id = c.lastrowid  # Get inserted org ID
-
+    org_id = c.lastrowid  # Get the ID of the organization just inserted
+    
     for member in org['members']:
         c.execute('''
-            INSERT INTO members (org_id, full_name, position, email, contact_no, sex, qpi, course, year_level, college)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO members (
+                org_id, full_name, position, email, contact_no,
+                sex, qpi, course, year_level, college
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (org_id, *member))
 
-# Commit and close
+# Finalize changes and close connection
 conn.commit()
 conn.close()
 
-print("✅ 3 dummy organizations and 15 student members inserted successfully.")
+print("✅ Successfully created and populated the database with 3 organizations and 15 members.")

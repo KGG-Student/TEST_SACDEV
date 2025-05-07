@@ -9,7 +9,7 @@ DATABASE = 'database/users.db'
 
 # --- DATABASE CONNECTION ---
 def get_db_connection():
-    conn = sqlite3.connect('database/users.db')
+    conn = sqlite3.connect('database/db_script.db')
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -92,6 +92,23 @@ def view_organization(org_id):
     documents = db.execute('SELECT * FROM documents WHERE org_id = ?', (org_id,)).fetchall()
     return render_template('organization_view.html', org=org, members=members, documents=documents)
 
+@app.route('/students_orgs')
+def students_orgs():
+    conn = sqlite3.connect('db_script.db')
+    cursor = conn.cursor()
+    
+    query = """
+    SELECT m.full_name, m.position, m.email, o.name AS organization_name
+    FROM members m
+    JOIN organizations o ON m.org_id = o.id
+    ORDER BY students.name;
+    """
+    
+    cursor.execute(query)
+    data = cursor.fetchall()
+    conn.close()
+    
+    return render_template('students_orgs.html', data=data)
 
 
 
