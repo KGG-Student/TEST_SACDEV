@@ -1,31 +1,124 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Organization Members</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
 
-{% block title %}Students & Orgs{% endblock %}
+        .header {
+            background-color: #1e3a8a;
+            padding: 20px;
+            color: #fff;
+            text-align: center;
+        }
 
-{% block content %}
-<div style="max-width: 900px; margin: 40px auto; color: #333;">
-    <h2 style="color: #2c3e50;">Students and Their Organizations</h2>
-    <a href="{{ url_for('sacdev_dashboard') }}" style="display: inline-block; margin-bottom: 20px; color: #3498db;">← Back to Dashboard</a>
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            background-color: #ffffff;
+            padding: 25px 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
+        }
 
-    {% if data %}
-    <table style="width: 100%; border-collapse: collapse;">
-        <thead>
-            <tr style="background-color: #3498db; color: white;">
-                <th style="padding: 12px; text-align: left;">Student Name</th>
-                <th style="padding: 12px; text-align: left;">Organization</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for student, org in data %}
-            <tr style="border-bottom: 1px solid #ccc;">
-                <td style="padding: 10px;">{{ student }}</td>
-                <td style="padding: 10px;">{{ org }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <p>No student-organization data available.</p>
-    {% endif %}
-</div>
-{% endblock %}
+        h1 {
+            margin: 0 0 20px 0;
+            font-size: 24px;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 16px;
+            background-color: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #1d4ed8;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #e0e0e0;
+            text-align: left;
+        }
+
+        th {
+            background-color: #3b82f6;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+
+        tr:hover {
+            background-color: #eef2ff;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 15px;
+            color: #aaa;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Students in Organizations</h1>
+    </div>
+
+    <div class="container">
+        <a href="http://127.0.0.1:5000/sacdev_dashboard" class="back-button">← Back to Dashboard</a>
+
+        {% if students %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Organization</th>
+                    <th>Full Name</th>
+                    <th>Position</th>
+                    <th>QPI</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>{{ student['org_name'] }}</td>
+                    <td>{{ student['full_name'] }}</td>
+                    <td>{{ student['position'] }}</td>
+                    <td>{{ student['qpi'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No student organization data available.</p>
+        {% endif %}
+    </div>
+
+    <div class="footer">
+        &copy; {{ year }} SACDEV Management System
+    </div>
+</body>
+</html>

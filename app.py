@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, g
 from flask_login import logout_user
 import sqlite3
+import traceback
 
 app = Flask(__name__)
 app.secret_key = 'secret123'  # Required for session and flash
@@ -92,23 +93,29 @@ def view_organization(org_id):
     documents = db.execute('SELECT * FROM documents WHERE org_id = ?', (org_id,)).fetchall()
     return render_template('organization_view.html', org=org, members=members, documents=documents)
 
+# ---STUDENTS ORGS--- 
 @app.route('/students_orgs')
 def students_orgs():
-    conn = sqlite3.connect('db_script.db')
-    cursor = conn.cursor()
-    
-    query = """
-    SELECT m.full_name, m.position, m.email, o.name AS organization_name
-    FROM members m
-    JOIN organizations o ON m.org_id = o.id
-    ORDER BY students.name;
-    """
-    
-    cursor.execute(query)
-    data = cursor.fetchall()
-    conn.close()
-    
-    return render_template('students_orgs.html', data=data)
+    try:
+        conn = sqlite3.connect('database/db_script.db')
+        conn.row_factory = sqlite3.Row
+        c = conn.cursor()
+
+        c.execute('''
+            SELECT o.name AS org_name, m.full_name, m.position, m.qpi
+            FROM members m
+            JOIN organizations o ON m.org_id = o.id
+        ''')
+
+        students = c.fetchall()
+        conn.close()
+
+        return render_template('students_orgs.html', students=students)
+
+    except Exception as e:
+        import traceback
+        return f"<pre>{traceback.format_exc()}</pre>"
+
 
 
 
