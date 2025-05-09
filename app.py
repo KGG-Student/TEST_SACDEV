@@ -57,18 +57,36 @@ def login():
 
 
 # --- DASHBOARD ROUTE ---
-@app.route('/sacdev_dashboard')
+@app.route('/sacdev_dashboard', methods=['GET', 'POST'])
 def sacdev_dashboard():
     if session.get('role') != 'sacdev':
         return redirect('/login')
 
     conn = sqlite3.connect('database/users.db')
     c = conn.cursor()
+
+    # Add organization
+    if request.method == 'POST':
+        if 'add_org' in request.form:
+            name = request.form['name']
+            description = request.form['description']
+            mission = request.form['mission']
+            vision = request.form['vision']
+            status = request.form['status']
+            c.execute('INSERT INTO organizations (name, description, mission, vision, status) VALUES (?, ?, ?, ?, ?)',
+                      (name, description, mission, vision, status))
+            conn.commit()
+        elif 'delete_org' in request.form:
+            org_id = request.form['org_id']
+            c.execute('DELETE FROM organizations WHERE id = ?', (org_id,))
+            conn.commit()
+
     c.execute('SELECT * FROM organizations')
     orgs = c.fetchall()
     conn.close()
 
     return render_template('sacdev_dashboard.html', user=session['username'], orgs=orgs)
+
 
 @app.route('/rrc_dashboard')
 def rrc_dashboard():
@@ -85,13 +103,27 @@ def logout():
     return redirect(url_for('login'))  
 # --- ORGANIZATIONS ---
 
-@app.route('/organization/<int:org_id>')
+@app.route('/organization/<int:org_id>', methods=['GET', 'POST'])
 def view_organization(org_id):
     db = get_db()
+
+    # Handle new member submission
+    if request.method == 'POST':
+        name = request.form['name']
+        position = request.form['position']
+        db.execute(
+    'INSERT INTO members (org_id, full_name, position) VALUES (?, ?, ?)',
+    (org_id, request.form['name'], request.form['position'])
+)
+
+        db.commit()
+        return redirect(url_for('view_organization', org_id=org_id))
+
     org = db.execute('SELECT * FROM organizations WHERE id = ?', (org_id,)).fetchone()
     members = db.execute('SELECT * FROM members WHERE org_id = ?', (org_id,)).fetchall()
     documents = db.execute('SELECT * FROM documents WHERE org_id = ?', (org_id,)).fetchall()
     return render_template('organization_view.html', org=org, members=members, documents=documents)
+
 
 # ---STUDENTS ORGS--- 
 @app.route('/students_orgs')

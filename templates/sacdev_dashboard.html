@@ -1,11 +1,9 @@
 {% extends 'base.html' %}
-
 {% block title %}SACDEV Dashboard{% endblock %}
 
 {% block content %}
 <style>
     body {
-        margin: 0;
         font-family: 'Segoe UI', sans-serif;
         background: linear-gradient(to right, #2c3e50, #3498db);
         color: white;
@@ -21,112 +19,87 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 30px;
     }
 
-    .dashboard-header h2 {
-        margin: 0;
-        font-size: 28px;
-    }
-
-    .btn-logout {
+    .btn-logout, .btn-view-students {
         background-color: #e74c3c;
-        padding: 10px 20px;
+        padding: 10px 18px;
         text-decoration: none;
         color: white;
         border-radius: 6px;
         transition: 0.3s;
     }
 
-    .btn-logout:hover {
+    .btn-view-students {
+        background-color: #3498db;
+        margin-top: 15px;
+    }
+
+    .btn-logout:hover, .btn-view-students:hover {
         background-color: #c0392b;
     }
 
     .section-title {
         font-size: 22px;
-        margin-bottom: 20px;
+        margin: 30px 0 15px;
         border-bottom: 2px solid #fff;
         padding-bottom: 5px;
-    }
-
-    .btn-view-students {
-        display: inline-block;
-        background-color: #3498db;
-        color: white;
-        padding: 10px 18px;
-        border-radius: 6px;
-        text-decoration: none;
-        font-size: 14px;
-        font-weight: bold;
-        margin-bottom: 25px;
-        transition: background 0.3s ease;
-    }
-
-    .btn-view-students:hover {
-        background-color: #2471a3;
-    }
-
-    .org-list {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
     }
 
     .org-card {
         background-color: rgba(255, 255, 255, 0.08);
         padding: 15px 20px;
+        margin-bottom: 10px;
         border-left: 6px solid #2980b9;
         border-radius: 10px;
-        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
-        backdrop-filter: blur(4px);
     }
 
-    .org-card h4 {
-        margin: 0;
-        font-size: 20px;
-        font-weight: 600;
-    }
+    .org-card h4 { margin: 0; font-size: 20px; }
+    .org-card p { font-size: 14px; margin: 5px 0; }
+    .status { padding: 5px 10px; border-radius: 8px; font-size: 12px; }
+    .status.active { background: #2ecc71; }
+    .status.pending { background: orange; color: black; }
+    .status.rejected { background: #e74c3c; }
 
-    .org-card p {
-        margin: 8px 0;
-        font-size: 14px;
-    }
-
-    .status {
-        display: inline-block;
-        padding: 4px 10px;
-        border-radius: 12px;
-        font-size: 12px;
-        margin-right: 10px;
-    }
-
-    .status.pending {
-        background-color: orange;
-        color: black;
-    }
-
-    .status.approved {
-        background-color: #2ecc71;
-        color: white;
-    }
-
-    .status.rejected {
-        background-color: #e74c3c;
-        color: white;
-    }
-
-    .view-btn {
-        background-color: #3498db;
-        color: white;
+    .view-btn, .delete-btn {
         padding: 6px 12px;
-        border-radius: 5px;
-        text-decoration: none;
+        margin-top: 10px;
+        border-radius: 6px;
         font-size: 13px;
-        transition: 0.3s;
+        border: none;
+        color: white;
+        cursor: pointer;
     }
 
-    .view-btn:hover {
-        background-color: #2471a3;
+    .view-btn { background-color: #3498db; }
+    .delete-btn { background-color: #e74c3c; }
+
+    .form-section {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+    }
+
+    input, textarea, select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 12px;
+        border: none;
+        border-radius: 5px;
+    }
+
+    .submit-btn {
+        background-color: #27ae60;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    .submit-btn:hover {
+        background-color: #219150;
     }
 </style>
 
@@ -136,22 +109,39 @@
         <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
     </div>
 
-    <!-- New Button -->
     <a href="{{ url_for('students_orgs') }}" class="btn-view-students">View All Students & Their Organizations</a>
 
     <h3 class="section-title">Registered Organizations</h3>
+    {% for org in orgs %}
+    <div class="org-card">
+        <h4>{{ org[1] }}</h4>
+        <p>{{ org[2] }}</p>
+        <span class="status {{ org[5]|lower }}">{{ org[5] }}</span>
+        <a href="{{ url_for('view_organization', org_id=org[0]) }}" class="view-btn">View</a>
+        <form method="POST" style="display:inline;">
+            <input type="hidden" name="org_id" value="{{ org[0] }}">
+            <button type="submit" name="delete_org" class="delete-btn">Delete</button>
+        </form>
+    </div>
+    {% else %}
+    <p>No organizations registered yet.</p>
+    {% endfor %}
 
-    <div class="org-list">
-        {% for org in orgs %}
-        <div class="org-card">
-            <h4>{{ org[1] }}</h4> <!-- Organization Name -->
-            <p>{{ org[2] }}</p>   <!-- Description -->
-            <span class="status {{ org[5]|lower }}">{{ org[5] }}</span>
-            <a href="{{ url_for('view_organization', org_id=org[0]) }}" class="view-btn">View</a>
-        </div>
-        {% else %}
-        <p>No organizations registered yet.</p>
-        {% endfor %}
+    <h3 class="section-title">➕ Add New Organization</h3>
+    <div class="form-section">
+        <form method="POST">
+            <input type="text" name="name" placeholder="Organization Name" required>
+            <textarea name="description" placeholder="Description" required></textarea>
+            <textarea name="mission" placeholder="Mission"></textarea>
+            <textarea name="vision" placeholder="Vision"></textarea>
+            <select name="status" required>
+                <option value="">-- Select Status --</option>
+                <option value="Active">Active</option>
+                <option value="Pending">Pending</option>
+                <option value="Rejected">Rejected</option>
+            </select>
+            <button type="submit" name="add_org" class="submit-btn">Add Organization</button>
+        </form>
     </div>
 </div>
 {% endblock %}

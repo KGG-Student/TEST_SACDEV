@@ -1,71 +1,104 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Organization View</title>
-  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> -->
-  <style>
+{% extends 'base.html' %}
+
+{% block title %}{{ org.name }}{% endblock %}
+
+{% block content %}
+<style>
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f9f9f9;
+    background-color: #2c3e50;
     margin: 0;
-    padding: 0 20px;
-    color:rgb(255, 255, 255);
+    padding: 20px;
+    color: white;
   }
-  
+
   h2 {
-    color:rgb(255, 255, 255);
     margin-top: 30px;
     font-size: 2em;
   }
-  
+
   h3 {
-    color:rgb(255, 255, 255);
     margin-top: 20px;
     border-bottom: 2px solid #ddd;
     padding-bottom: 5px;
   }
-  
+
   p {
     line-height: 1.6;
     margin-bottom: 15px;
-    color: White;
+    color: white;
   }
-  
+
   ul {
     list-style: none;
     padding: 0;
   }
-  
+
   ul li {
-    background:rgba(0, 183, 255, 0.97);
+    background: rgba(0, 183, 255, 0.97);
     border: 1px solid #ddd;
     padding: 10px 15px;
     margin-bottom: 8px;
     border-radius: 6px;
     transition: background 0.3s ease;
+    color: white;
   }
-  
+
   ul li:hover {
-    background-color:rgba(0, 68, 255, 0.99);
+    background-color: rgba(0, 68, 255, 0.99);
   }
-  
+
   a {
     color: #3498db;
     text-decoration: none;
   }
-  
+
   a:hover {
     text-decoration: underline;
   }
-  </style>
-</head>
-<body>
 
-{% extends 'base.html' %}
+  form {
+    margin-top: 20px;
+    background-color: rgba(255, 255, 255, 0.08);
+    padding: 15px;
+    border-radius: 10px;
+  }
 
-{% block content %}
+  input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    border: none;
+    font-size: 14px;
+  }
+
+  .submit-btn {
+    background-color: #27ae60;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .submit-btn:hover {
+    background-color: #1e8449;
+  }
+
+  .back-btn {
+    display: inline-block;
+    background: #3498db;
+    padding: 8px 16px;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-bottom: 20px;
+  }
+</style>
+
+<a href="{{ url_for('sacdev_dashboard') }}" class="back-btn">← Back to Dashboard</a>
+
 <h2>{{ org.name }}</h2>
 <p>{{ org.description }}</p>
 
@@ -79,15 +112,26 @@
 <ul>
   {% for member in members %}
     <li>{{ member.full_name }} - {{ member.position }}</li>
+  {% else %}
+    <p>No members yet.</p>
   {% endfor %}
 </ul>
+
+<!-- Add Member Form -->
+<h3>Add New Member</h3>
+<form method="POST" style="max-width: 400px; background-color: rgba(255, 255, 255, 0.08); padding: 20px; border-radius: 10px; margin-bottom: 30px;">
+  <input type="text" name="name" placeholder="Full Name" required style="width: 100%; padding: 10px; margin-bottom: 12px; border-radius: 6px; border: none; font-size: 14px;">
+  <input type="text" name="position" placeholder="Position" required style="width: 100%; padding: 10px; margin-bottom: 12px; border-radius: 6px; border: none; font-size: 14px;">
+  <button type="submit" class="submit-btn" style="width: 100%; padding: 10px; border-radius: 6px; border: none; background-color: #27ae60; color: white; font-size: 14px;">Add Member</button>
+</form>
+
 
 <h3>Documents</h3>
 <ul>
   {% for doc in documents %}
-    <li>{{ doc.title }} - <a href="{{ url_for('static', filename=doc.file_path) }}">View</a></li>
+    <li>{{ doc.title }} - <a href="{{ url_for('static', filename=doc.file_path) }}" target="_blank">View</a></li>
+  {% else %}
+    <p>No documents uploaded yet.</p>
   {% endfor %}
 </ul>
 {% endblock %}
-</body>
-</html>
