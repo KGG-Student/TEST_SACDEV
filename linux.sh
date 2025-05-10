@@ -1,19 +1,21 @@
 #!/bin/bash
 
+# Ensure required system packages are installed
+sudo apt update
+sudo apt install -y python3-venv python3-pip python3-full
 
-# Check if Python is installed
-if ! command -v python3 &> /dev/null; then
-    echo "Python3 is not installed. Please install it first."
-    exit 1
+# Create virtual environment if it doesn't exist
+VENV_DIR="venv"
+if [ ! -d "$VENV_DIR" ]; then
+    python3 -m venv "$VENV_DIR"
+    echo "Virtual environment created at $VENV_DIR"
 fi
 
-# Check if pip is installed
-if ! command -v pip3 &> /dev/null; then
-    echo "pip3 is not installed. Attempting to install..."
-    sudo apt update && sudo apt install -y python3-pip
-fi
+# Activate and install
+source "$VENV_DIR/bin/activate"
+pip install --upgrade pip
 
-# Create a requirements.txt file
+# Create requirements.txt
 cat <<EOF > requirements.txt
 blinker==1.9.0
 click==8.1.8
@@ -30,7 +32,6 @@ typing_extensions==4.13.2
 Werkzeug==3.1.3
 EOF
 
-# Install the packages
-pip3 install -r requirements.txt
+pip install -r requirements.txt
 
-echo "Installation complete."
+echo "✅ All packages installed in virtual environment."

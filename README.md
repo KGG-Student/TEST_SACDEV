@@ -20,3 +20,11 @@
     
 ###    install requirements
         pip install -r requirements.txt
+
+## Instructions : Linux Installation.
+
+### grant execution permission
+        sudo chmod +x linux.sh
+
+### execute 
+        ./linux.sh
