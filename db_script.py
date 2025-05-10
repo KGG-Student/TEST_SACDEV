@@ -86,6 +86,16 @@ organizations = [
             (20187347240, 'Nico Ramos', 'Treasurer', '20187347240@my.exu.edu.ph', '09170000014', 'Male', 3.3, 'Media Arts', '1st', 'College of Arts and Sciences'),
             (20183686866, 'Olive Velasco', 'Curator', '20183686866@my.exu.edu.ph', '09170000015', 'Female', 3.9, 'Art History', '3rd', 'College of Arts and Sciences')
         ]
+    },
+    {
+        'name': 'ORGless',
+        'description': 'Students without organizations.',
+        'mission': 'To list students who are not part of any organization.',
+        'vision': 'Home for the orgless',
+        'status': 'Active',
+        'members': [
+            (20009990000, 'John Doe', 'Forever President', '20009990000@my.xu.edu.ph', ' 09876543210','Unknown', 0.0, 'Unknown', 'Unknown', 'Unknown'), 
+            ]
     }
 ]
 
