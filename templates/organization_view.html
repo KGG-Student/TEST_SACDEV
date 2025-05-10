@@ -29,25 +29,6 @@
     color: white;
   }
 
-  ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  ul li {
-    background: rgba(0, 183, 255, 0.97);
-    border: 1px solid #ddd;
-    padding: 10px 15px;
-    margin-bottom: 8px;
-    border-radius: 6px;
-    transition: background 0.3s ease;
-    color: white;
-  }
-
-  ul li:hover {
-    background-color: rgba(0, 68, 255, 0.99);
-  }
-
   a {
     color: #3498db;
     text-decoration: none;
@@ -64,7 +45,9 @@
     border-radius: 10px;
   }
 
-  input[type="text"] {
+  input[type="text"],
+  input[type="email"],
+  input[type="number"] {
     width: 100%;
     padding: 10px;
     margin-bottom: 12px;
@@ -87,6 +70,20 @@
     background-color: #1e8449;
   }
 
+  .kick-btn {
+    background-color: #e74c3c;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+
+  .kick-btn:hover {
+    background-color: #c0392b;
+  }
+
   .back-btn {
     display: inline-block;
     background: #3498db;
@@ -95,6 +92,25 @@
     text-decoration: none;
     border-radius: 5px;
     margin-bottom: 20px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: rgba(255, 255, 255, 0.08);
+    margin-top: 20px;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  th, td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+  }
+
+  th {
+    background-color: #34495e;
   }
 </style>
 
@@ -109,23 +125,56 @@
 <h3>Vision</h3>
 <p>{{ org.vision }}</p>
 
+<h3>Member Stats</h3>
+<p><strong>Total:</strong> {{ total_members }} | <strong>Male:</strong> {{ male_count }} | <strong>Female:</strong> {{ female_count }}</p>
+
 <h3>Members</h3>
-<ul>
-  {% for member in members %}
-    <li>{{ member.full_name }} - {{ member.position }}</li>
-  {% else %}
-    <p>No members yet.</p>
-  {% endfor %}
-</ul>
+{% if members %}
+<table>
+  <thead>
+    <tr>
+      <th>Full Name</th>
+      <th>Position</th>
+      <th>Gender</th>
+      <th>QPI</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for member in members %}
+    <tr>
+      <td>{{ member.full_name }}</td>
+      <td>{{ member.position }}</td>
+      <td>{{ member.gender }}</td>
+      <td>{{ member.qpi }}</td>
+      <td>
+        <form method="POST" style="display:inline;">
+          <input type="hidden" name="member_id" value="{{ member.id }}">
+          <button type="submit" name="kick_member" class="kick-btn">Kick</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+  <p>No members yet.</p>
+{% endif %}
 
-<!-- Add Member Form -->
 <h3>Add New Member</h3>
-<form method="POST" style="max-width: 400px; background-color: rgba(255, 255, 255, 0.08); padding: 20px; border-radius: 10px; margin-bottom: 30px;">
-  <input type="text" name="name" placeholder="Full Name" required style="width: 100%; padding: 10px; margin-bottom: 12px; border-radius: 6px; border: none; font-size: 14px;">
-  <input type="text" name="position" placeholder="Position" required style="width: 100%; padding: 10px; margin-bottom: 12px; border-radius: 6px; border: none; font-size: 14px;">
-  <button type="submit" class="submit-btn" style="width: 100%; padding: 10px; border-radius: 6px; border: none; background-color: #27ae60; color: white; font-size: 14px;">Add Member</button>
+<form method="POST" style="max-width: 600px;">
+  <input type="hidden" name="add_member" value="1">
+  <input type="text" name="full_name" placeholder="Full Name" required>
+  <input type="text" name="position" placeholder="Position" required>
+  <input type="email" name="email" placeholder="Email">
+  <input type="text" name="contact_no" placeholder="Contact Number">
+  <input type="text" name="sex" placeholder="Gender (Male/Female)">
+  <input type="number" step="0.01" name="qpi" placeholder="QPI">
+  <input type="text" name="course" placeholder="Course">
+  <input type="text" name="year_level" placeholder="Year Level">
+  <input type="text" name="college" placeholder="College">
+  <button type="submit" class="submit-btn" style="width: 100%;">Add Member</button>
 </form>
-
 
 <h3>Documents</h3>
 <ul>

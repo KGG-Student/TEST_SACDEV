@@ -101,29 +101,65 @@ def rrc_dashboard():
 def logout():
     # logout_user()  
     return redirect(url_for('login'))  
-# --- ORGANIZATIONS ---
 
+# --- ORGANIZATIONS ---
 @app.route('/organization/<int:org_id>', methods=['GET', 'POST'])
 def view_organization(org_id):
     db = get_db()
 
-    # Handle new member submission
+    # Add new member manually by entering details
     if request.method == 'POST':
-        name = request.form['name']
-        position = request.form['position']
-        db.execute(
-    'INSERT INTO members (org_id, full_name, position) VALUES (?, ?, ?)',
-    (org_id, request.form['name'], request.form['position'])
-)
+        if 'add_member' in request.form:
+            full_name = request.form['full_name']
+            position = request.form['position']
+            email = request.form['email']
+            contact_no = request.form['contact_no']
+            sex = request.form['sex']
+            qpi = request.form['qpi']
+            course = request.form['course']
+            year_level = request.form['year_level']
+            college = request.form['college']
 
-        db.commit()
+            db.execute(
+                '''INSERT INTO members (
+                    org_id, full_name, position, email, contact_no, sex, qpi, course, year_level, college
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+                (org_id, full_name, position, email, contact_no, sex, qpi, course, year_level, college)
+            )
+            db.commit()
+
+        elif 'kick_member' in request.form:
+            member_id = request.form['member_id']
+            db.execute('DELETE FROM members WHERE id = ?', (member_id,))
+            db.commit()
+
         return redirect(url_for('view_organization', org_id=org_id))
 
+    # Fetch organization details
     org = db.execute('SELECT * FROM organizations WHERE id = ?', (org_id,)).fetchone()
-    members = db.execute('SELECT * FROM members WHERE org_id = ?', (org_id,)).fetchall()
-    documents = db.execute('SELECT * FROM documents WHERE org_id = ?', (org_id,)).fetchall()
-    return render_template('organization_view.html', org=org, members=members, documents=documents)
 
+    # Fetch members (no join needed)
+    members = db.execute('''
+        SELECT position, full_name, sex AS gender, qpi, id
+        FROM members
+        WHERE org_id = ?
+    ''', (org_id,)).fetchall()
+
+    # Optional: documents table
+    documents = db.execute('SELECT * FROM documents WHERE org_id = ?', (org_id,)).fetchall()
+
+    # Count members
+    total_members = len(members)
+    male_count = sum(1 for m in members if m['gender'] == 'Male')
+    female_count = sum(1 for m in members if m['gender'] == 'Female')
+
+    return render_template('organization_view.html',
+                           org=org,
+                           members=members,
+                           documents=documents,
+                           total_members=total_members,
+                           male_count=male_count,
+                           female_count=female_count)
 
 # ---STUDENTS ORGS--- 
 @app.route('/students_orgs')
