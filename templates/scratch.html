@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Expandable Table</title>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+
+    .expandable-content {
+      display: none;
+      background-color: #f9f9f9;
+    }
+
+    .expanded + .expandable-content {
+      display: table-row;
+    }
+
+    tr.expand-toggle {
+      cursor: pointer;
+      background-color: #f0f0f0;
+    }
+
+    .expandable-content td {
+      padding-left: 30px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Role</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Row 1 -->
+    <tr class="expand-toggle">
+      <td>Alice</td>
+      <td>Engineer</td>
+      <td>Active</td>
+    </tr>
+    <tr class="expandable-content">
+      <td colspan="3">More info about Alice: Joined in 2020, works on frontend features.</td>
+    </tr>
+
+    <!-- Row 2 -->
+    <tr class="expand-toggle">
+      <td>Bob</td>
+      <td>Designer</td>
+      <td>Inactive</td>
+    </tr>
+    <tr class="expandable-content">
+      <td colspan="3">More info about Bob: Freelance contract, UX specialist.</td>
+    </tr>
+  </tbody>
+</table>
+
+<script>
+  document.querySelectorAll('.expand-toggle').forEach(row => {
+    row.addEventListener('click', () => {
+      row.classList.toggle('expanded');
+    });
+  });
+</script>
+
+</body>
+</html>

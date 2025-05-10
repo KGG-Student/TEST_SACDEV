@@ -134,7 +134,7 @@ def students_orgs():
         c = conn.cursor()
 
         c.execute('''
-            SELECT o.name AS org_name, m.full_name, m.position, m.qpi
+            SELECT o.name AS org_name, m.*
             FROM members m
             JOIN organizations o ON m.org_id = o.id
         ''')

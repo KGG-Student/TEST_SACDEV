@@ -67,12 +67,13 @@
             font-weight: 600;
         }
 
-        tr:nth-child(even) {
-            background-color: #f9fafb;
+        tr.expand-toggle {
+            background-color: #f2f2f2;
         }
 
-        tr:hover {
-            background-color: #eef2ff;
+        tr.expand-toggle:hover {
+            cursor: pointer;
+            background-color: #e2e9ff;
         }
 
         .footer {
@@ -81,6 +82,18 @@
             color: #aaa;
             font-size: 13px;
         }
+
+        .expandable-content {
+            display: none;
+            background-color: #1e3a8a;
+            color: white;
+        }
+
+        .expanded + .expandable-content {
+            display: table-row;
+        }
+
+        
     </style>
 </head>
 <body>
@@ -103,11 +116,31 @@
             </thead>
             <tbody>
                 {% for student in students %}
-                <tr>
+                <tr class="expand-toggle">
                     <td>{{ student['org_name'] }}</td>
                     <td>{{ student['full_name'] }}</td>
                     <td>{{ student['position'] }}</td>
                     <td>{{ student['qpi'] }}</td>
+                </tr>
+                <tr class="expandable-content">
+                    <td colspan="4">
+                        <strong>Details:</strong>
+                        <table>
+                            <tr>
+                                <td colspan="4">Course : {{ student['course'] }}</td>
+                                <td colspan="3">College : {{student['college']}}</td>
+                                <td colspan="1">Year : {{ student['year_level'] }}</td>
+                            
+                            </tr>
+                            <tr>
+                                <td colspan="2">Student ID : {{ student['id'] }}</td>
+                                <td colspan="2">Sex : {{ student['sex'] }}</td>
+                                <td colspan="2">Contact : {{ student['contact_no'] }}</td>
+                                <td colspan="2">Email : {{ student['email'] }}</td>
+                            </tr>
+                        </table>
+                    </td>
+
                 </tr>
                 {% endfor %}
             </tbody>
@@ -120,5 +153,13 @@
     <div class="footer">
         &copy; {{ year }} SACDEV Management System
     </div>
+
+    <script>
+        document.querySelectorAll('.expand-toggle').forEach(row => {
+            row.addEventListener('click', () => {
+                row.classList.toggle('expanded');
+            });
+        });
+</script>
 </body>
 </html>
