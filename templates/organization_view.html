@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ org.name }}{% endblock %}
+{% block title %}
+  {{ org.name }}
+{% endblock %}
 
 {% block content %}
 <style>
@@ -129,37 +131,13 @@
 <p><strong>Total:</strong> {{ total_members }} | <strong>Male:</strong> {{ male_count }} | <strong>Female:</strong> {{ female_count }}</p>
 
 <h3>Members</h3>
-{% if members %}
-<table>
-  <thead>
-    <tr>
-      <th>Full Name</th>
-      <th>Position</th>
-      <th>Gender</th>
-      <th>QPI</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for member in members %}
-    <tr>
-      <td>{{ member.full_name }}</td>
-      <td>{{ member.position }}</td>
-      <td>{{ member.gender }}</td>
-      <td>{{ member.qpi }}</td>
-      <td>
-        <form method="POST" style="display:inline;">
-          <input type="hidden" name="member_id" value="{{ member.id }}">
-          <button type="submit" name="kick_member" class="kick-btn">Kick</button>
-        </form>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-{% else %}
-  <p>No members yet.</p>
-{% endif %}
+<ul>
+  {% for member in members %}
+    <li>{{ member.full_name }} - {{ member.position }}</li>
+  {% else %}
+    <p>No members yet.</p>
+  {% endfor %}
+</ul>
 
 <h3>Add New Member</h3>
 <form method="POST" style="max-width: 600px;">
@@ -177,11 +155,14 @@
 </form>
 
 <h3>Documents</h3>
+{% if documents %}
 <ul>
   {% for doc in documents %}
     <li>{{ doc.title }} - <a href="{{ url_for('static', filename=doc.file_path) }}" target="_blank">View</a></li>
-  {% else %}
-    <p>No documents uploaded yet.</p>
   {% endfor %}
 </ul>
+{% else %}
+<p>No documents uploaded yet.</p>
+{% endif %}
+
 {% endblock %}
