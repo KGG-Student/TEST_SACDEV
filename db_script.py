@@ -5,7 +5,7 @@ import os
 os.makedirs('database', exist_ok=True)
 
 # Connect to the database
-db_path = 'database/db_script.db'
+db_path = 'database/users.db'
 conn = sqlite3.connect(db_path)
 c = conn.cursor()
 
@@ -23,6 +23,7 @@ c.execute('''
 
 # Create members table
 c.execute('''
+          
     CREATE TABLE IF NOT EXISTS members (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         org_id INTEGER,
@@ -38,6 +39,9 @@ c.execute('''
         FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE
     )
 ''')
+
+c.execute("DELETE FROM organizations")
+c.execute("DELETE FROM members")
 
 # Dummy data
 organizations = [

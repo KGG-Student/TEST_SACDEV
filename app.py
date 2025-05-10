@@ -129,7 +129,7 @@ def view_organization(org_id):
 @app.route('/students_orgs')
 def students_orgs():
     try:
-        conn = sqlite3.connect('database/db_script.db')
+        conn = sqlite3.connect('database/users.db')
         conn.row_factory = sqlite3.Row
         c = conn.cursor()
 
