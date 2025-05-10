@@ -34,4 +34,29 @@ EOF
 
 pip install -r requirements.txt
 
+
+echo
+# Default port
+PORT=5000
+
+# Check for UFW
+if ! command -v ufw &> /dev/null; then
+    echo "UFW is not installed. Installing..."
+    sudo apt update && sudo apt install -y ufw
+fi
+
+# Enable UFW if not already enabled
+STATUS=$(sudo ufw status | grep -o "Status: active")
+if [ "$STATUS" != "Status: active" ]; then
+    echo "Enabling UFW..."
+    sudo ufw enable
+else
+    echo "UFW is already active."
+fi
+
+# Allow the specified port
+echo "Allowing port $PORT through firewall..."
+sudo ufw allow $PORT
+
+
 echo "✅ All packages installed in virtual environment."
