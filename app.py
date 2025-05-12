@@ -63,6 +63,7 @@ def sacdev_dashboard():
         return redirect('/login')
 
     conn = sqlite3.connect('database/users.db')
+    conn.row_factory = sqlite3.Row
     c = conn.cursor()
 
     # Add organization
@@ -81,11 +82,59 @@ def sacdev_dashboard():
             c.execute('DELETE FROM organizations WHERE id = ?', (org_id,))
             conn.commit()
 
-    c.execute('SELECT * FROM organizations')
+    # --- Ensure default org exists ---
+    c.execute("SELECT * FROM organizations WHERE name = 'No Organization'")
+    default_org = c.fetchone()
+
+    if not default_org:
+        c.execute('''
+            INSERT INTO organizations (name, description, mission, vision, status)
+            VALUES (?, ?, ?, ?, ?)
+        ''', ('No Organization', 'Auto-assigned orgless students', '', '', 'Active'))
+        conn.commit()
+        c.execute("SELECT * FROM organizations WHERE name = 'No Organization'")
+        default_org = c.fetchone()
+
+    default_org_id = default_org['id']
+
+    # --- Find orgless students in 'members' table ---
+    c.execute('SELECT id, name FROM students')  # Assuming you have a students table
+    all_students = c.fetchall()
+
+    c.execute('SELECT full_name FROM members')
+    members = c.fetchall()
+    member_names = {m['full_name'] for m in members}
+
+    # --- Insert orgless students into default org ---
+    for student in all_students:
+        if student['name'] not in member_names:
+            c.execute('''
+                INSERT INTO members (org_id, full_name)
+                VALUES (?, ?)
+            ''', (default_org_id, student['name']))
+    conn.commit()
+
+    # --- Fetch orgs with member counts ---
+    c.execute('''
+        SELECT o.*, COUNT(m.id) AS member_count
+        FROM organizations o
+        LEFT JOIN members m ON o.id = m.org_id
+        GROUP BY o.id
+    ''')
     orgs = c.fetchall()
+
+    # --- Orgless students (optional: those in default org) ---
+    c.execute('''
+        SELECT name FROM students
+        WHERE name NOT IN (
+            SELECT full_name FROM members WHERE org_id != ?
+        )
+    ''', (default_org_id,))
+    orgless_students = c.fetchall()
+
     conn.close()
 
-    return render_template('sacdev_dashboard.html', user=session['username'], orgs=orgs)
+    return render_template('sacdev_dashboard.html', user=session['username'], orgs=orgs, orgless_students=orgless_students)
 
 
 @app.route('/rrc_dashboard')
